@@ -3,7 +3,7 @@
  truncate table mig_transactions_log;
  */
 
-call mig_transactions();
+call mig_migrate_transactions();
 
 # select sum(rows_migrated), sum(timestampdiff(second, started_at, ended_at))
 select *, timestampdiff(second, started_at, ended_at)
@@ -30,7 +30,7 @@ ORDER BY part_no;
 
 -- test partitioning
 -- pls check indexes on the tables before running the below queries
-show indexes from fatt.transactions;
+show indexes from transactions;
 
 select p.merchant_id,  count(p.id)
 from fatt.transactions p use index(idx_transactions__merchant_id_created_at_id)
@@ -41,8 +41,8 @@ where
 group by p.merchant_id;
 
 select p.merchant_id,  count(p.id)
-from fatt.mig_transactions p use index(idx_transactions_partitioned2_merchant_id_created_at_id) -- idx_transactions_partitioned2_merchant_id
-join fatt.merchants m use index for join (idx_merchants_status_is_sandbox_id) on m.id = p.merchant_id
+from mig_transactions p use index(idx_transactions_partitioned2_merchant_id_created_at_id) -- idx_transactions_partitioned2_merchant_id
+join merchants m use index for join (idx_merchants_status_is_sandbox_id) on m.id = p.merchant_id
 where
         (m.status = 'INACTIVE' or m.is_sandbox = 1)
         AND p.created_at between '2026-02-01' and '2026-03-01'
