@@ -1,69 +1,32 @@
-drop table if exists mig_transactions;
+DROP TABLE IF EXISTS `mig_transactions_settlements`;
 
-create table mig_transactions
-(
-    row_id                   bigint unsigned auto_increment                                         not null,
-    id                       varchar(40)                                                            not null,
-    invoice_id               varchar(40)                                                            not null,
-    reference_id             varchar(40)                                                            not null,
-    reference_row_id         bigint unsigned                                                        null comment 'reference to parent transaction fatt.transaction.row_id',
-    recurring_transaction_id varchar(40)                                                            not null,
-    auth_id                  varchar(50)                                                            null,
-    type                     enum ('charge', 'void', 'refund', 'capture', 'pre_auth', 'credit', '') not null,
-    source                   varchar(50)                                                            null comment 'The system where the payment was processed (e.g. terminalservice.dejavoo, haywire.apps). A value of null means that the transaction was processed within the Stax system via the core api.',
-    source_ip                varchar(50)                                                            null,
-    is_merchant_present      tinyint                                                                null,
-    merchant_id              varchar(40)                                                            not null,
-    user_id                  varchar(40)                                                            not null,
-    customer_id              varchar(40)                                                            not null,
-    payment_method_id        varchar(40)                                                            null,
-    is_manual                tinyint                                                                null,
-    spreedly_token           varchar(50)                                                            not null,
-    spreedly_response        text                                                                   not null,
-    success                  tinyint                                                                not null,
-    message                  varchar(255)                                                           null,
-    meta                     text                                                                   not null,
-    total                    double                                                                 not null,
-    method                   varchar(20)                                                            not null,
-    pre_auth                 tinyint                                                                not null,
-    is_captured              tinyint  default 0                                                     not null,
-    last_four                varchar(4)  default ''                                                 null,
-    interchange_code         varchar(45) default ''                                                 null,
-    interchange_fee          double                                                                 null,
-    batch_id                 varchar(80) default ''                                                 null,
-    batched_at               timestamp   default CURRENT_TIMESTAMP                                  null on update CURRENT_TIMESTAMP,
-    emv_response             varchar(80) default ''                                                 null,
-    avs_response             varchar(80) default ''                                                 null,
-    cvv_response             varchar(80) default ''                                                 null,
-    pos_entry                varchar(92) default ''                                                 null,
-    pos_salesperson          varchar(80) default ''                                                 null,
-    receipt_email_at         timestamp                                                              null,
-    receipt_sms_at           timestamp                                                              null,
-    settled_at               timestamp                                                              null,
-    created_at               datetime   default CURRENT_TIMESTAMP                                  not null,
-#     updated_at               timestamp   default '0000-00-00 00:00:00'                              not null,
-    updated_at               TIMESTAMP                                                              NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    gateway_id               varchar(50)                                                            null,
-    issuer_auth_code         varchar(50) as ((case
-                                                  when json_valid(`spreedly_response`) then coalesce(
-                                                          json_unquote(json_extract(`spreedly_response`,
-                                                                                    _utf8mb4'$.gateway_specific_response_fields.nmi.authcode')),
-                                                          json_unquote(json_extract(`spreedly_response`,
-                                                                                    _utf8mb4'$.gateway_specific_response_fields.forte.authorization_code')),
-                                                          json_unquote(json_extract(`spreedly_response`,
-                                                                                    _utf8mb4'$.gateway_specific_response_fields.authorize_net.authorization_code')),
-                                                          json_unquote(json_extract(`spreedly_response`, _utf8mb4'$.AuthCode')))
-                                                  else _utf8mb4'' end)) stored,
-    channel                  varchar(50)                                                            null,
-    currency                 enum ('USD', 'CAD', 'MXN', 'EUR', 'GBP')                               null,
-    primary key (created_at,row_id),
-    key transactions_key_row_id (row_id),
-    constraint id_unique unique (id, created_at),
-    index transactions_merchant_id (merchant_id),
-    index transactions_customer_id (customer_id)
+CREATE TABLE `mig_transactions_settlements` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `settlement_id` varchar(40) COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT 'processor.transaction.id',
+  `transaction_id` varchar(40) COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT 'fatt.transaction.id',
+  `batch_id` varchar(50) COLLATE utf8mb3_unicode_ci DEFAULT NULL COMMENT 'Populated with processor.transactions.batch_id',
+  `source` enum('emaf','engine','finix','skynetsimulator','terminalservice.deja','test','unknown','haywire-test','terminalservice.dejavoo') COLLATE utf8mb3_unicode_ci NOT NULL,
+  `processor` enum('processor','test') COLLATE utf8mb3_unicode_ci NOT NULL,
+  `funded_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `settlement_row_id` bigint unsigned DEFAULT NULL COMMENT 'row id for processor.transaction',
+  `transaction_row_id` bigint unsigned DEFAULT NULL COMMENT 'row id for fatt.transaction',
+  PRIMARY KEY (`id`, `created_at`),
+  UNIQUE KEY `uc_transaction_id` (`transaction_id`, `created_at`),
+  KEY `transactions_settlements_settlement_id_index` (`settlement_id`),
+  KEY `transactions_settlements_created_at_index` (`created_at`),
+  KEY `transactions_settlements_batch_id_transaction_row_id` (`batch_id`,`transaction_row_id`),
+  KEY `transactions_settlements_covering_index` (`settlement_id`(13),`transaction_id`(13),`source`),
+  KEY `transactions_settlements_id_source_index` (`transaction_id`(13),`source`),
+  KEY `transactions_settlements_batch_id_index` (`batch_id`(16),`transaction_id`(13))
 )
-    collate = utf8mb4_unicode_ci
-    row_format = DYNAMIC
+    ENGINE=InnoDB
+    AUTO_INCREMENT=426866375
+    DEFAULT CHARSET=utf8mb3
+    COLLATE=utf8mb3_unicode_ci
+    ROW_FORMAT=COMPACT
     partition by range columns (created_at)
         (
             partition p201501 values less than ('2015-02-01'),

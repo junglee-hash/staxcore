@@ -1,5 +1,5 @@
-drop procedure if exists mig_transactions;
-create procedure mig_transactions()
+drop procedure if exists mig_transactions_np;
+create procedure mig_transactions_np()
 begin
     declare done int default 0;
     declare v_start_id bigint default 0;
@@ -15,11 +15,11 @@ begin
     set v_next_id = v_start_id + v_batch_size;
 
     while v_next_id <= v_last_id do
-        insert into mig_transactions_log(v_start_id, v_next_id)
+        insert into mig_transactions_np_log(v_start_id, v_next_id)
         values (v_start_id, v_next_id);
         set v_log_Id = last_insert_id();
 
-        insert into mig_transactions (
+        insert into mig_transactions_np (
                 row_id, id, invoice_id, reference_id, reference_row_id, recurring_transaction_id, auth_id, type, source
                 , source_ip, is_merchant_present, merchant_id, user_id, customer_id, payment_method_id, is_manual
                 , spreedly_token, spreedly_response, success, message, meta, total, method, pre_auth, is_captured
@@ -36,7 +36,7 @@ begin
         where row_id between v_start_id and v_next_id;
         set insert_row_cnt = row_count();
 
-        update mig_transactions_log set rows_migrated = insert_row_cnt, ended_at = NOW() where id = v_log_id;
+        update mig_transactions_np_log set rows_migrated = insert_row_cnt, ended_at = NOW() where id = v_log_id;
 
         set v_start_id = v_next_id + 1;
         set v_next_id = v_start_id + v_batch_size;
