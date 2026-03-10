@@ -13,7 +13,6 @@ Both projects are designed and executed using **JetBrains DataGrip**, leveraging
 
 ### **Transaction Table Rebuild**
 - Normalize schema and improve datatype accuracy  
-- Migrate from legacy charset → **utf8mb4 / utf8mb4_0900_ai_ci**  
 - Rebuild indexes for modern access patterns  
 - Ensure primary key + secondary indexes align with MySQL 8+ best practices  
 - Enable safe cut‑over via atomic rename operations  
