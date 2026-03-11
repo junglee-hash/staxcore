@@ -9,9 +9,9 @@ begin
     declare v_log_id int default 0;
     declare insert_row_cnt int default 0;
 
-    set v_start_id = (select min(id) from processor.settlement_fees);
+    set v_start_id = (select min(row_id) from processor.settlement_fees);
     -- set v_start_id = 15400309;
-    set v_last_id = (select max(id) from processor.settlement_fees);
+    set v_last_id = (select max(row_id) from processor.settlement_fees);
     set v_next_id = v_start_id + v_batch_size;
 
     while v_next_id <= v_last_id do
@@ -33,3 +33,5 @@ begin
         set v_next_id = v_start_id + v_batch_size;
         end while;
 end;
+
+call mig_settlement_fees();

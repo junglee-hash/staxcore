@@ -2,5 +2,12 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/fatt/run transactions settlements migration steps.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/stored procedures/settlement_fees_migrated.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/stored procedures/transactions_fees_amounts_migrated.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/tables/add auto increment row_id to transactions_fees_amounts.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_settlement_fees.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_settlement_fees_log.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_transactions_fees_amounts.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_transactions_fees_amounts_log.sql" dialect="MySQL" />
   </component>
 </project>

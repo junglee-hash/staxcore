@@ -2,5 +2,12 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/fatt/run transactions settlements migration steps.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/stored procedures/settlement_fees_migrated.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/stored procedures/transactions_fees_amounts_migrated.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/tables/add auto increment row_id to transactions_fees_amounts.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_settlement_fees.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_settlement_fees_log.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_transactions_fees_amounts.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
+    <file url="file://$PROJECT_DIR$/processor/tables/mig_transactions_fees_amounts_log.sql" value="e805c7d4-99bb-4e69-8977-ff10a160c11e" />
   </component>
 </project>
